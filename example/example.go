@@ -8,7 +8,7 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-type ExampleStruct struct {
+type exampleStruct struct {
 	ID          int64   `graph:"ID"`
 	IntType     int     `graph:"int_type"`
 	Int8Type    int8    `graph:"int8_type"`
@@ -21,7 +21,7 @@ type ExampleStruct struct {
 	StringType  string  `graph:"string_type"`
 }
 
-var example = ExampleStruct{
+var example = exampleStruct{
 	ID:          1,
 	IntType:     1,
 	Int8Type:    8,
@@ -49,7 +49,8 @@ func main() {
 	})
 	log.Printf("%+v\n", exampleObject)
 
-	// exampleObject2, err := bind.NewObject(example, "Example")
+	// You also can create new graphql.Object by using bind.NewObject()
+	// exampleObject2, err := bind.NewObject("Example", example)
 	// if err != nil {
 	// 	log.Println(err)
 	// }

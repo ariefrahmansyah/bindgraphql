@@ -7,7 +7,13 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-func NewObject(obj interface{}, name string) (*graphql.Object, error) {
+// NewObject returns new *graphql.Object instance.
+// exampleObject2, err := bind.NewObject("Example", example)
+// if err != nil {
+// 	log.Println(err)
+// }
+// log.Printf("%+v\n", exampleObject2)
+func NewObject(name string, obj interface{}) (*graphql.Object, error) {
 	fields, err := NewFields(obj)
 	if err != nil {
 		return &graphql.Object{}, err
@@ -21,6 +27,8 @@ func NewObject(obj interface{}, name string) (*graphql.Object, error) {
 	return graphObj, nil
 }
 
+// NewFields returns new graphql.Fields that ready
+// to be used by your graphql.Object.
 func NewFields(obj interface{}) (graphql.Fields, error) {
 	graphFields := graphql.Fields{}
 
@@ -55,7 +63,7 @@ func NewFields(obj interface{}) (graphql.Fields, error) {
 		}
 
 		graphFields[tag] = &graphql.Field{
-			Type: getGraphType(tag, field.Type),
+			Type: getGraphType(tag, field.Type.Kind()),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				return getResolve(tag, p.Source), nil
 			},
@@ -88,12 +96,12 @@ func appendFields(dest, source graphql.Fields) error {
 	return nil
 }
 
-func getGraphType(tag string, fieldType reflect.Type) *graphql.Scalar {
+func getGraphType(tag string, fieldKind reflect.Kind) *graphql.Scalar {
 	if tag == "ID" {
 		return graphql.ID
 	}
 
-	switch fieldType.Kind() {
+	switch fieldKind {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return graphql.Int
 	case reflect.Float32, reflect.Float64:
