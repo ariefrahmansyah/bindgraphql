@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ariefrahmansyah/bindgraphql/badge.svg?branch=master)](https://coveralls.io/github/ariefrahmansyah/bindgraphql?branch=master)
 [![GoReportCard](https://goreportcard.com/badge/github.com/ariefrahmansyah/bindgraphql)](https://goreportcard.com/report/github.com/ariefrahmansyah/bindgraphql)
 
-You have your struct, it use JSON tag. Then, one of your developer friend introduce you to GraphQL.
+You have RESTful API. You have your struct, it use JSON tag. Then, one of your developer friend introduce you to GraphQL.
 
 If you want to migrate your API to GraphQL without so much pain, this library is for you.
 
