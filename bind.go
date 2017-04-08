@@ -54,10 +54,7 @@ func NewFields(obj interface{}) (graphql.Fields, error) {
 					return graphql.Fields{}, err
 				}
 
-				err = appendFields(graphFields, structFields)
-				if err != nil {
-					return graphql.Fields{}, err
-				}
+				appendFields(graphFields, structFields)
 			}
 
 			continue

@@ -11,11 +11,179 @@ type child struct {
 	StringType string `graph:"string_type"`
 }
 
+type child2 struct {
+	IntType   int   `graph:"int_type"`
+	Int32Type int32 `graph:"int_type"`
+}
+
 type dummy struct {
 	Skip    string `graph:"-"`
 	ID      int64  `graph:"ID"`
 	IntType int    `graph:"int_type"`
 	Child   child
+}
+
+type dummy2 struct {
+	IntType int `graph:"int_type"`
+	Child   child
+	Child2  child2
+}
+
+func mockResolve(v interface{}) (interface{}, error) {
+	return v, nil
+}
+
+func TestNewObject(t *testing.T) {
+	type args struct {
+		name string
+		obj  interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *graphql.Object
+		wantErr bool
+	}{
+		{
+			"NewObject1",
+			args{
+				name: "obj1",
+				obj: dummy{
+					ID:      int64(1),
+					IntType: int(100),
+					Child: child{
+						StringType: "child",
+					},
+				},
+			},
+			graphql.NewObject(graphql.ObjectConfig{
+				Name: "obj1",
+				Fields: graphql.Fields{
+					"ID": &graphql.Field{
+						Type: graphql.ID,
+						Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+							return int64(1), nil
+						},
+					},
+					"int_type": &graphql.Field{
+						Type: graphql.Int,
+						Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+							return int(100), nil
+						},
+					},
+					"string_type": &graphql.Field{
+						Type: graphql.String,
+						Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+							return "child", nil
+						},
+					},
+				},
+			}),
+			false,
+		},
+		{
+			"NewObject2",
+			args{
+				name: "obj2",
+				obj: dummy2{
+					IntType: int(100),
+					Child: child{
+						StringType: "child",
+					},
+					Child2: child2{
+						IntType:   int(200),
+						Int32Type: int32(300),
+					},
+				},
+			},
+			graphql.NewObject(graphql.ObjectConfig{
+				Name:   "obj1",
+				Fields: graphql.Fields{},
+			}),
+			true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := NewObject(tt.args.name, tt.args.obj)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewObject() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestNewFields(t *testing.T) {
+	type args struct {
+		obj interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    graphql.Fields
+		wantErr bool
+	}{
+		{
+			"NewFields1",
+			args{
+				obj: dummy{
+					ID:      int64(1),
+					IntType: int(100),
+					Child: child{
+						StringType: "child",
+					},
+				},
+			},
+			graphql.Fields{
+				"ID": &graphql.Field{
+					Type: graphql.ID,
+					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+						return int64(1), nil
+					},
+				},
+				"int_type": &graphql.Field{
+					Type: graphql.Int,
+					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+						return int(100), nil
+					},
+				},
+				"string_type": &graphql.Field{
+					Type: graphql.String,
+					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+						return "child", nil
+					},
+				},
+			},
+			false,
+		},
+		{
+			"NewFields2",
+			args{
+				obj: dummy2{
+					IntType: int(100),
+					Child: child{
+						StringType: "child",
+					},
+					Child2: child2{
+						IntType:   int(200),
+						Int32Type: int32(300),
+					},
+				},
+			},
+			graphql.Fields{},
+			true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := NewFields(tt.args.obj)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewFields() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
 }
 
 func TestSkip(t *testing.T) {
