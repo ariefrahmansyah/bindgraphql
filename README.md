@@ -10,7 +10,12 @@ If you want to migrate your API to GraphQL without so much pain, this library is
 
 ```go
 import "github.com/ariefrahmansyah/bindgraphql"
+
+graphObj, err := bind.NewObject("YourObj", yourObj)
 ```
 
 # Example
 See [example.go](https://github.com/ariefrahmansyah/bindgraphql/blob/master/example/example.go).
+
+# Contributor
+* [Ahmad Muzakki](https://gist.github.com/ahmadmuzakki29/73fc1e21bf7ae087a9ac53299032f09c)
