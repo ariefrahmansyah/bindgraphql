@@ -8,11 +8,7 @@ import (
 )
 
 // NewObject returns new *graphql.Object instance.
-// exampleObject2, err := bind.NewObject("Example", example)
-// if err != nil {
-// 	log.Println(err)
-// }
-// log.Printf("%+v\n", exampleObject2)
+//	graphObj, err := bind.NewObject("YourObj", yourObj)
 func NewObject(name string, obj interface{}) (*graphql.Object, error) {
 	fields, err := NewFields(obj)
 	if err != nil {
@@ -29,6 +25,11 @@ func NewObject(name string, obj interface{}) (*graphql.Object, error) {
 
 // NewFields returns new graphql.Fields that ready
 // to be used by your graphql.Object.
+//	graphFields, err := bind.NewFields(yourObj)
+//	graphObj := graphql.NewObject(graphql.ObjectConfig{
+//		Name:   "YourObj",
+//		Fields: graphFields,
+//	})
 func NewFields(obj interface{}) (graphql.Fields, error) {
 	graphFields := graphql.Fields{}
 
